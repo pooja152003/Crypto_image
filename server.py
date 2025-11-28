@@ -2,11 +2,12 @@ import base64
 import os
 import cv2
 import numpy as np
+from flask_cors import CORS
 from flask import Flask, request, jsonify
 from random import randrange, getrandbits
 
 app = Flask(__name__)
-
+CORS(app)
 # -------------------------
 # RSA UTILITIES
 # -------------------------
