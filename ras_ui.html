@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Real-Time Asymmetric Vision Encryption - Project Demo</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* --- CSS Variables for easy theming --- */
+    :root {
+      --color-background: #111827; /* Dark Slate Blue */
+      --color-card-bg: #1f2937;    /* Slightly lighter card bg */
+      --color-border: #374151;     /* Medium gray border */
+      --color-text-light: #f9fafb; /* Off-white text */
+      --color-text-muted: #9ca3af; /* Muted gray text */
+      --color-primary-accent: #6366f1; /* Indigo - main highlight */
+      --color-secondary-accent: #38bdf8; /* Sky blue - secondary highlight */
+      --color-button-start: #22c55e; /* Green for start */
+      --color-button-stop: #ef4444;  /* Red for stop */
+      --color-success: #22c55e;
+      --color-warning: #facc15;
+      --color-error: #ef4444;
+    }
+
+    /* --- Base Styles --- */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--color-background);
+      color: var(--color-text-light);
+      min-height: 100vh;
+      line-height: 1.6;
+      padding: 32px 16px 40px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 16px;
+    }
+
+    /* --- Hero Section --- */
+    .hero {
+      text-align: center;
+      padding: 60px 0;
+      margin-bottom: 60px;
+      background: linear-gradient(180deg, var(--color-background) 0%, #0c101a 100%); /* Subtle gradient */
+      border-radius: 12px;
+      margin-top: 20px;
+      border: 1px solid var(--color-border);
+    }
+
+    .hero-tagline {
+      font-size: 0.9rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-secondary-accent);
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 5vw, 4.5rem);
+      font-weight: 700;
+      margin-bottom: 20px;
+      line-height: 1.1;
+    }
+
+    .hero h1 .highlight {
+      color: var(--color-primary-accent);
+    }
+
+    .hero p {
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      color: var(--color-text-muted);
+      max-width: 700px;
+      margin: 0 auto 30px;
+    }
+
+    .hero-actions {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      flex-direction: column;
+    }
+
+    .hero-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 28px;
+      border-radius: 8px;
+      border: none;
+      font-size: 1.05rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease-in-out;
+      text-decoration: none;
+      color: var(--color-text-light);
+    }
+
+    .hero-btn.primary {
+      background: var(--color-primary-accent);
+      box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+    }
+
+    .hero-btn.primary:hover {
+      background: #4f46e5;
+      transform: translateY(-2px);
+      box-shadow: 0 12px 25px rgba(99, 102, 241, 0.5);
+    }
+
+    .hero-btn.secondary {
+      background: var(--color-card-bg);
+      border: 1px solid var(--color-border);
+      color: var(--color-text-muted);
+    }
+
+    .hero-btn.secondary:hover {
+      background: #2d3748;
+      transform: translateY(-2px);
+      color: var(--color-text-light);
+    }
+
+    /* --- Feature Highlights (simplified from Image 1 bottom) --- */
+    .feature-highlights {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 40px;
+      margin-top: 40px;
+    }
+
+    .feature-item {
+      text-align: center;
+      color: var(--color-text-muted);
+      font-size: 0.95rem;
+    }
+
+    .feature-item strong {
+      display: block;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--color-secondary-accent);
+      margin-bottom: 5px;
+    }
+
+    /* --- Section Headings --- */
+    .section-heading {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .section-heading h2 {
+      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .section-heading p {
+      font-size: 1.1rem;
+      color: var(--color-text-muted);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* --- Demo Card --- */
+    .demo-card {
+      background: var(--color-card-bg);
+      border-radius: 12px;
+      border: 1px solid var(--color-border);
+      padding: 28px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+      margin-bottom: 60px;
+    }
+
+    .card-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .card-subtitle {
+      font-size: 1rem;
+      color: var(--color-text-muted);
+      margin-bottom: 24px;
+    }
+
+    .status-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px 30px;
+      align-items: center;
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px dashed var(--color-border);
+    }
+
+    .status-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--color-text-muted);
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--color-border);
+      transition: background 0.3s ease;
+    }
+
+    .dot.ok { background: var(--color-success); }
+    .dot.warn { background: var(--color-warning); }
+    .dot.error { background: var(--color-error); }
+
+    .action-btn {
+      display: block; /* Full width for emphasis */
+      width: 100%;
+      padding: 14px 28px;
+      border-radius: 8px;
+      border: none;
+      background: var(--color-button-start);
+      color: white;
+      font-size: 1.15rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.1s ease,
+                  box-shadow 0.2s ease, opacity 0.2s ease;
+      box-shadow: 0 6px 20px rgba(34, 197, 94, 0.3);
+      margin-bottom: 20px;
+    }
+
+    .action-btn:hover:not(:disabled) {
+      background: #16a34a;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(34, 197, 94, 0.4);
+    }
+
+    .action-btn:disabled {
+      opacity: 0.6;
+      cursor: default;
+      box-shadow: none;
+      transform: none;
+    }
+
+    .action-btn.stop {
+      background: var(--color-button-stop);
+      box-shadow: 0 6px 20px rgba(239, 68, 68, 0.3);
+    }
+
+    .action-btn.stop:hover:not(:disabled) {
+      background: #dc2626;
+      box-shadow: 0 10px 25px rgba(239, 68, 68, 0.4);
+    }
+
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Responsive grid */
+      gap: 24px;
+      margin-top: 20px;
+    }
+
+    .video-panel {
+      background: #0f172a; /* Darker background for video area */
+      border-radius: 10px;
+      border: 1px solid var(--color-border);
+      padding: 15px;
+      position: relative;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .panel-title-text {
+      font-size: 1.05rem;
+      font-weight: 500;
+      color: var(--color-secondary-accent);
+    }
+
+    .panel-tag {
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(var(--color-primary-accent), 0.1);
+      border: 1px solid rgba(var(--color-primary-accent), 0.3);
+      color: var(--color-secondary-accent);
+    }
+
+    video,
+    img {
+      width: 100%;
+      height: 280px; /* Consistent height */
+      border-radius: 8px;
+      border: 1px solid var(--color-border);
+      background: #020617; /* Very dark inside */
+      object-fit: cover;
+      display: block; /* Remove extra space below images */
+    }
+
+    img#encryptedImg {
+      object-fit: contain; /* Keep the 'encrypted' look */
+      background: radial-gradient(circle at center, #1f2937, #020617 70%);
+    }
+
+    .demo-note {
+      font-size: 0.85rem;
+      color: var(--color-text-muted);
+      margin-top: 30px;
+      padding: 15px 20px;
+      background: var(--color-background);
+      border-left: 4px solid var(--color-primary-accent);
+      border-radius: 8px;
+      line-height: 1.5;
+    }
+
+    .demo-note code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 0.82rem;
+      background: #2d3748;
+      border-radius: 4px;
+      padding: 2px 6px;
+      border: 1px solid var(--color-border);
+      color: var(--color-text-light);
+    }
+
+    /* --- Footer --- */
+    footer {
+      text-align: center;
+      margin-top: 60px;
+      font-size: 0.85rem;
+      color: var(--color-text-muted);
+      padding-top: 20px;
+      border-top: 1px solid var(--color-border);
+    }
+
+    /* --- Responsive Adjustments --- */
+    @media (max-width: 768px) {
+      .hero {
+        padding: 40px 0;
+        margin-bottom: 40px;
+      }
+      .hero-actions {
+        flex-direction: column;
+        gap: 15px;
+      }
+      .hero-btn {
+        width: 80%; /* Make buttons wider on small screens */
+        max-width: 300px;
+      }
+      .feature-highlights {
+        gap: 25px;
+      }
+      .feature-item strong {
+        font-size: 1.5rem;
+      }
+      .section-heading h2 {
+        font-size: 2rem;
+      }
+      .demo-card {
+          padding: 20px;
+      }
+      .status-bar {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 10px;
+      }
+      video, img {
+        height: 200px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="hero">
+      <div class="hero-tagline"></div>
+      <h1>Real-Time Asymmetric <span class="highlight">Vision Encryption</span></h1>
+      <p>
+        Showcasing a proof-of-concept for securing live visual data streams using asymmetric cryptography. Designed for privacy-focused applications and secure communications.
+      </p>
+      <div class="hero-actions">
+        <a href="#demo-section" class="hero-btn primary">Start Live Demo</a>
+        
+        <div class="feature-highlights">
+          <div class="feature-item">
+              <strong>&lt;10ms</strong>
+              Encryption Latency
+          </div>
+          <div class="feature-item">
+              <strong>4096-bit</strong>
+              Asymmetric Keys
+          </div>
+          <div class="feature-item">
+              <strong>Secure</strong>
+              Data Transmission
+          </div>
+      </div>
+    </header>
+
+    <section id="demo-section" class="section-heading">
+      <h2>See It In Action</h2>
+      <p>Observe the live camera feed being encrypted in real-time. This visualization demonstrates the immediate transformation of raw video into a secure stream.</p>
+    </section>
+
+    <section class="demo-card">
+      <div class="card-title">Live Encryption Demo</div>
+      <div class="card-subtitle">
+        Allow camera access, then start the loop to see your original video and its encrypted output side by side.
+      </div>
+
+      <button id="toggleBtn" class="action-btn" disabled>Loading camera…</button>
+
+      <div class="status-bar">
+        <div class="status-item">
+          <span id="cameraDot" class="dot"></span>
+          <span id="cameraStatus">Camera: initializing…</span>
+        </div>
+        <div class="status-item">
+          <span id="encryptDot" class="dot warn"></span>
+          <span id="encryptStatus">Encryption: idle</span>
+        </div>
+      </div>
+
+      <div class="video-grid">
+        <div class="video-panel">
+          <div class="panel-header">
+            <span class="panel-title-text">Live Camera Feed</span>
+            <span class="panel-tag">Original Source</span>
+          </div>
+          <video id="camera" autoplay muted playsinline></video>
+        </div>
+        <div class="video-panel">
+          <div class="panel-header">
+            <span class="panel-title-text">Encrypted Output</span>
+            <span class="panel-tag">Secured Result</span>
+          </div>
+          <img id="encryptedImg" src="" alt="Encrypted frame will appear here" />
+        </div>
+      </div>
+
+      <p class="demo-note">
+        This demonstration requires a local backend server (e.g., Python/Flask) running at <code>http://localhost:5000/encrypt</code>. It expects a JSON payload with the <code>image</code> (base64 string) and should return a JSON object containing the <code>encrypted_image</code> (also base64).
+      </p>
+    </section>
+
+    <footer>
+      <p>Project Demo &copy; 2025 | Real-Time Asymmetric Vision Encryption</p>
+    </footer>
+  </div>
+
+  <canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
+
+  <script>
+    // --- JAVASCRIPT REMAINS UNCHANGED ---
+    const video = document.getElementById("camera");
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    const encryptedImg = document.getElementById("encryptedImg");
+    const btn = document.getElementById("toggleBtn");
+
+    const cameraStatus = document.getElementById("cameraStatus");
+    const cameraDot = document.getElementById("cameraDot");
+    const encryptStatus = document.getElementById("encryptStatus");
+    const encryptDot = document.getElementById("encryptDot");
+
+    let encrypting = false;
+    let intervalId = null;
+    let stream = null;
+
+    async function startCamera() {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        cameraStatus.textContent = "Camera: not supported in this browser";
+        cameraDot.className = "dot error";
+        btn.disabled = true;
+        btn.textContent = "Camera not supported";
+        return;
+      }
+
+      try {
+        cameraStatus.textContent = "Camera: requesting permission…";
+        stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        video.srcObject = stream;
+
+        cameraStatus.textContent = "Camera: ready";
+        cameraDot.className = "dot ok";
+
+        btn.disabled = false;
+        btn.textContent = "Start Encryption";
+      } catch (err) {
+        console.error("Camera error:", err);
+        cameraStatus.textContent = "Camera: permission denied or not available";
+        cameraDot.className = "dot error";
+        btn.disabled = true;
+        btn.textContent = "Camera unavailable";
+      }
+    }
+
+    startCamera();
+
+    btn.addEventListener("click", () => {
+      if (btn.disabled) return;
+
+      encrypting = !encrypting;
+
+      if (encrypting) {
+        btn.textContent = "Stop Encryption";
+        btn.classList.add("stop");
+
+        encryptStatus.textContent = "Encryption: running…";
+        encryptDot.className = "dot ok";
+
+        intervalId = setInterval(captureAndEncrypt, 200); // ~5 FPS
+      } else {
+        btn.textContent = "Start Encryption";
+        btn.classList.remove("stop");
+
+        encryptStatus.textContent = "Encryption: idle";
+        encryptDot.className = "dot warn";
+
+        clearInterval(intervalId);
+      }
+    });
+
+    async function captureAndEncrypt() {
+      if (!video.srcObject) return;
+
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      const dataUrl = canvas.toDataURL("image/png");
+
+      try {
+        const response = await fetch("http://localhost:5000/encrypt", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ image: dataUrl }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Server responded with status " + response.status);
+        }
+
+        const result = await response.json();
+        if (result && result.encrypted_image) {
+          encryptedImg.src = result.encrypted_image;
+        }
+      } catch (err) {
+        console.error("Encryption error:", err);
+        encryptStatus.textContent = "Encryption: error – see console/backend";
+        encryptDot.className = "dot error";
+
+        encrypting = false;
+        clearInterval(intervalId);
+        btn.textContent = "Start Encryption";
+        btn.classList.remove("stop");
+      }
+    }
+
+    // Stop camera when leaving the page
+    window.addEventListener("beforeunload", () => {
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+      }
+    });
+  </script>
+</body>
+</html>
